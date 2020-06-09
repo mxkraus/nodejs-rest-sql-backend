@@ -13,7 +13,7 @@ module.exports = class User {
 
     save(){
         return db.execute(
-            'INSERT INTO ap_users ( email, first_name, last_name, password, organisation, role) ' + 
+            'INSERT INTO ap_users ( usr_email, usr_first_name, usr_last_name, usr_password, usr_organisation, usr_role) ' + 
             'VALUES (?, ?, ?, ?, ?, ?)',
             [
                 this.email,
@@ -28,7 +28,7 @@ module.exports = class User {
 
     static getByEmail( email ){
         return db.execute(
-            'SELECT * FROM ap_users WHERE email = ?',
+            'SELECT * FROM ap_users WHERE usr_email = ?',
             [email]
         )
     }

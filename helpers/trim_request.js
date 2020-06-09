@@ -1,6 +1,7 @@
 module.exports = (req, res, next) => {
 
     /**
+     * Set "" values as NULL.
      * Needed to avoid errors on fk-constraints
      * 
      */

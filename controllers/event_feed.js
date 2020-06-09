@@ -1,28 +1,27 @@
 const Event = require('../models/event')
-const { validationResult } = require('express-validator');
+const { param, validationResult } = require('express-validator');
 
 /**
  * Read Events
  */
 exports.getEvents = (req, res, next) => {
-    // read all Events from DB
-    const organizer = req.params.organizer;
-    if (!organizer){
-        Event.getAllEvents()
+    const query = req.query;
+    if(query['usr_id']){
+        Event.getByUserId( query['usr_id'] )
             .then(([rows, fieldData]) => {
                 res.status(200).json({
                     message: 'Fetched events successfully.',
                     events: rows            
                 });
             })
-            .catch(err => {
-                if (!err.statusCode) {
-                err.statusCode = 500;
+            .catch( err => {
+                if(!err.statusCode){
+                    err.statusCode = 500;
                 }
                 next(err);
             });
-    }else{
-        Event.getEventsByOrganizer( organizer )
+    }else if(query['org_id']){
+        Event.getByOrgId( query['org_id'] )
             .then(([rows, fieldData]) => {
                 res.status(200).json({
                     message: 'Fetched organizer events successfully.',
@@ -31,7 +30,21 @@ exports.getEvents = (req, res, next) => {
             })
             .catch(err => {
                 if (!err.statusCode) {
-                err.statusCode = 500;
+                    err.statusCode = 500;
+                }
+                next(err);
+            });
+    }else{
+        Event.getAll()
+            .then(([rows, fieldData]) => {
+                res.status(200).json({
+                    message: 'Fetched events successfully.',
+                    events: rows            
+                });
+            })
+            .catch(err => {
+                if (!err.statusCode) {
+                    err.statusCode = 500;
                 }
                 next(err);
             });
@@ -40,7 +53,7 @@ exports.getEvents = (req, res, next) => {
 
 exports.getSingleEvent = (req, res, next) => {
     const eventId = req.params.eventId;
-    Event.getEventById( eventId )
+    Event.getById( eventId )
         .then(([event, fieldData]) => {
             if (!event) {
                 const error = new Error('Could not find event.');
@@ -67,8 +80,10 @@ exports.createEvent = (req, res, next) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        const error = new Error('Validation failed, entered data is incorrect.');
-        error.statusCode = 422;
+        const error = new Error();
+        error.statusCode = 401;
+        error.data = errors.array();
+        error.message = error.data[0].msg;
         throw error;
     }
 
@@ -105,10 +120,13 @@ exports.createEvent = (req, res, next) => {
  * Update Event
  */
 exports.updateSingleEvent = (req, res, next) => {
+
     const eventId = req.params.eventId;
     if (!eventId) {
-        const error = new Error('No EventId transferred');
-        error.statusCode = 422;
+        const error = new Error();
+        error.statusCode = 401;
+        error.data = errors.array();
+        error.message = error.data[0].msg;
         throw error;
     }
 
@@ -145,17 +163,21 @@ exports.updateSingleEvent = (req, res, next) => {
  * Delete Event
  */
 exports.deleteSingleEvent = (req, res, next) => {
+
     const eventId = req.params.eventId;
     if (!eventId) {
-        const error = new Error('No EventId transferred');
-        error.statusCode = 422;
+        const error = new Error();
+        error.statusCode = 401;
+        error.data = errors.array();
+        error.message = error.data[0].msg;
         throw error;
     }
+
     Event.deleteSingleEvent( eventId )
         .then( result => {
             res.status(200).json({
                 message: 'Post deleted sucessfully!',
-                event: Event.getEventById(eventId)
+                eventId: eventId
             })
         })
         .catch(err => {

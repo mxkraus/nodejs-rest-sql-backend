@@ -19,9 +19,10 @@ exports.signup = (req, res, next) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        const error = new Error('Validation failed.');
-        error.statusCode = 422;
+        const error = new Error();
+        error.statusCode = 401;
         error.data = errors.array();
+        error.message = error.data[0].msg;
         throw error;
     }
 
@@ -69,9 +70,10 @@ exports.signup = (req, res, next) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        const error = new Error('Validation failed.');
-        error.statusCode = 422;
+        const error = new Error();
+        error.statusCode = 401;
         error.data = errors.array();
+        error.message = error.data[0].msg;
         throw error;
     }
 
@@ -89,7 +91,7 @@ exports.signup = (req, res, next) => {
             foundUser = user[0];
             return bcrypt.compare(
                 password,
-                user[0].password
+                user[0].usr_password
             )
         })
         .then( isEqual => {
@@ -100,8 +102,8 @@ exports.signup = (req, res, next) => {
             }
             const token = jwt.sign(
                 {
-                    email: foundUser.email,
-                    userId: foundUser.id
+                    email: foundUser.usr_email,
+                    userId: foundUser.usr_id
                 },
                 process.env.PK_SECRET,
                 { expiresIn: '1h' }
@@ -109,7 +111,7 @@ exports.signup = (req, res, next) => {
             res.status(200)
                 .json({
                     token: token,
-                    userid: foundUser.id.toString()
+                    userid: foundUser.usr_id.toString()
                 });
         })
         .catch(err => {

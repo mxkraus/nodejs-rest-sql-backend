@@ -19,7 +19,7 @@ module.exports = class Event{
      */
     save(){
         return db.execute(
-            'INSERT INTO ap_events (time_from, time_to, organizer, title, place, details, created_from, created_at, updated_at) ' + 
+            'INSERT INTO ap_events (evt_time_from, evt_time_to, evt_organizer, evt_title, evt_place, evt_details, evt_created_from, evt_created_at, evt_updated_at) ' + 
             'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [
                 this.time_from, 
@@ -38,25 +38,34 @@ module.exports = class Event{
     /**
      * GET-Handler
      */
-    static getAllEvents() {
+    static getAll() {
         return db.execute(
-            'SELECT * from ap_events as evt '
+            'SELECT * from ap_events AS evt '
             // 'INNER JOIN ap_organizations AS org ON org.id = evt.organizer '+
             // 'INNER JOIN ap_users AS usr ON usr.id = evt.created_from'
         );
     }
 
-    static getEventsByOrganizer( organizer ){
+    static getByOrgId( orgId ){
         return db.execute(
-            'SELECT * FROM ap_organizations AS org INNER JOIN ap_events as evt ' +
-            'ON org.id = evt.organizer ' +
-            'WHERE org.name = ?', [organizer]
+            'SELECT * FROM ap_events AS evt WHERE evt_organizer = ?', 
+            [orgId]
         )
     }
 
-    static getEventById( evtId ){
+    static getById( evtId ){
         return db.execute(
-            'SELECT * from ap_events where ID = ?', [evtId]
+            'SELECT * from ap_events WHERE evt_id = ?', 
+            [evtId]
+        )
+    }
+
+    static getByUserId( usrId ){
+        return db.execute(
+            'SELECT * FROM ap_events AS evt ' + 
+            'INNER JOIN ap_jnct_orga_user as jct ON jct.jct_organization = evt.evt_organizer ' +
+            'WHERE jct_user = ?',
+            [usrId]
         )
     }
 
@@ -66,8 +75,8 @@ module.exports = class Event{
     updateSingleEvent( evtId ){
         return db.execute(
             'UPDATE ap_events ' +
-            'SET time_from = ?, time_to = ?, organizer = ?, title = ?, place = ?, details = ?, created_from = ?, created_at = ?, updated_at = ? ' +
-            'WHERE id = ?', 
+            'SET evt_time_from = ?, evt_time_to = ?, evt_organizer = ?, evt_title = ?, evt_place = ?, evt_details = ?, evt_created_from = ?, evt_created_at = ?, evt_updated_at = ? ' +
+            'WHERE evt_id = ?', 
             [
                 this.time_from, 
                 this.time_to, 
@@ -88,7 +97,8 @@ module.exports = class Event{
      */
     static deleteSingleEvent( evtId ){
         return db.execute(
-            'DELETE FROM ap_events WHERE id = ?', [evtId]
+            'DELETE FROM ap_events WHERE evt_id = ?', 
+            [evtId]
         );
     }
 

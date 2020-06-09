@@ -13,8 +13,6 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 
-
-
 const eventRoutes = require('./routes/event_feed');
 const authRoutes = require('./routes/auth');
 
