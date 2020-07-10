@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
      */
     
     for( var [key, value] of Object.entries(req.body)){
-        if( value == "" ){
+        if( value === "" ){
             req.body[key] = null;
         }
     }

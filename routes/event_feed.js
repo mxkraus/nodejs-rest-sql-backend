@@ -17,10 +17,9 @@ router.get(
             .matches(/\d/)
             .toInt()
     ],
-    isAuth, 
     eventFeedController.getEvents);  
 
-router.get('/event/:eventId', isAuth, eventFeedController.getSingleEvent);  
+router.get('/event/:eventId', eventFeedController.getSingleEvent);  
 
 /**
  * Create Event
@@ -29,16 +28,16 @@ router.get('/event/:eventId', isAuth, eventFeedController.getSingleEvent);
 router.post(
         '/event', 
         [
-            body('time_from')
+            body('evt_time_from')
                 .not().isEmpty()
                 .withMessage('Please fille starting time'),
-            body('time_to')
+            body('evt_time_to')
                 .not().isEmpty()
                 .withMessage('Please fille ending time'),
-            body('organizer')
+            body('evt_organizer')
                 .not().isEmpty()
                 .withMessage('Organizer may not be empty'),
-            body('title')
+            body('evt_title')
                 .not().isEmpty()
                 .withMessage('Please add an title to the event.')
         ],

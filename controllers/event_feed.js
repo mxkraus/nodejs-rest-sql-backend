@@ -87,15 +87,15 @@ exports.createEvent = (req, res, next) => {
         throw error;
     }
 
-    const tf = req.body.time_from;
-    const tt = req.body.time_to;
-    const oz = req.body.organizer;
-    const tl = req.body.title;
-    const pl = req.body.place;
-    const dt = req.body.details;
-    const cf = req.body.created_from;
-    const ca = req.body.created_at;
-    const ua = req.body.updated_at;
+    const tf = req.body.evt_time_from;
+    const tt = req.body.evt_time_to;
+    const oz = req.body.evt_organizer;
+    const tl = req.body.evt_title;
+    const pl = req.body.evt_place;
+    const dt = req.body.evt_details;
+    const cf = req.body.evt_created_from;
+    const ca = req.body.evt_created_at;
+    const ua = req.body.evt_updated_at;
 
     const event = new Event( tf, tt, oz, tl, pl, dt, cf, ca, ua );
 
@@ -130,15 +130,15 @@ exports.updateSingleEvent = (req, res, next) => {
         throw error;
     }
 
-    const tf = req.body.time_from;
-    const tt = req.body.time_to;
-    const oz = req.body.organizer;
-    const tl = req.body.title;
-    const pl = req.body.place;
-    const dt = req.body.details;
-    const cf = req.body.created_from;
-    const ca = req.body.created_at;
-    const ua = req.body.updated_at;
+    const tf = req.body.evt_time_from;
+    const tt = req.body.evt_time_to;
+    const oz = req.body.evt_organizer;
+    const tl = req.body.evt_title;
+    const pl = req.body.evt_place;
+    const dt = req.body.evt_details;
+    const cf = req.body.evt_created_from;
+    const ca = req.body.evt_created_at;
+    const ua = req.body.evt_updated_at;
 
     const event = new Event( tf, tt, oz, tl, pl, dt, cf, ca, ua );
 
@@ -165,6 +165,7 @@ exports.updateSingleEvent = (req, res, next) => {
 exports.deleteSingleEvent = (req, res, next) => {
 
     const eventId = req.params.eventId;
+    
     if (!eventId) {
         const error = new Error();
         error.statusCode = 401;
