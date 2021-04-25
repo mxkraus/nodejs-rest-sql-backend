@@ -7,7 +7,7 @@ var digestRequest = require("request-digest")(
 exports.temperature = (req, res, next) => {
   digestRequest.request(
     {
-      host: "http://192.168.2.124",
+      host: process.env.WH_HOST,
       path: "/api/1.0/datapoint/1/60/0/2/0/0",
       port: 80,
       method: "GET",
