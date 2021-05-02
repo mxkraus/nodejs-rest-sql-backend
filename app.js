@@ -13,25 +13,26 @@ const piRoutes = require('./routes/pi_feed');
 const windhagerRoutes = require('./routes/windhager');
 const authRoutes = require('./routes/auth');
 
-app.use(orgRoutes);
-app.use(eventRoutes);
-app.use(piRoutes);
-app.use(authRoutes);
-app.use(windhagerRoutes);
-
 /**
+ * IMPORTANT: Header Middleware has to be set here
+ * bevore all the requests get handled in the USE Middlewares! 
+ * Otherwise the header doesnt get set.
  * Prevent error "has been blocked by CORS policy: 
  * No 'Access-Control-Allow-Origin' header is present on the requested resource."
  */
  app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader(
-        'Access-Control-Allow-Methods',
-        'OPTIONS, GET, POST, PUT, PATCH, DELETE'
-    );
+    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE' );
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next();
 });
+
+app.use(orgRoutes);
+app.use(eventRoutes);
+app.use(authRoutes);
+
+app.use('/pi', piRoutes);
+app.use('/wh', windhagerRoutes);
 
 /**
  * Define entry view
